@@ -120,7 +120,7 @@
 			<plugin>
 				<groupId>io.spring.javaformat</groupId>
 				<artifactId>spring-javaformat-maven-plugin</artifactId>
-				<version>${spring-javaformat.version}</version>
+				<version>0.0.48</version>
 			</plugin>
 
 			<plugin>
@@ -144,16 +144,19 @@
 				<artifactId>git-build-hook-maven-plugin</artifactId>
 				<version>3.5.0</version>
 				<configuration>
-					<installHooks>
-						<pre-commit>.github/hooks/pre-commit</pre-commit>
-						<commit-msg>.github/hooks/commit-msg</commit-msg>
-						<pre-push>.github/hooks/pre-push</pre-push>
-					</installHooks>
+					<gitConfig>
+						<core.hooksPath>.githooks</core.hooksPath>
+					</gitConfig>
 				</configuration>
+
+
 				<executions>
 					<execution>
+						<id>configure-git-hooks</id>
+						<phase>initialize</phase>
+
 						<goals>
-							<goal>install</goal>
+							<goal>configure</goal>
 						</goals>
 					</execution>
 				</executions>
