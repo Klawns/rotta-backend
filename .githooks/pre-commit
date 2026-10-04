@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+mapfile -d '' staged_java_files < <(
+    git diff --cached --name-only --diff-filter=ACMR -z -- '*.java'
+)
+
+if ((${#staged_java_files[@]} == 0)); then
+    exit 0
+fi
+
+for file in "${staged_java_files[@]}"; do
+    if ! git diff --quiet -- "$file"; then
+        echo "Commit cancelado: '$file' possui alterações não staged."
+        echo "Faça stage do arquivo inteiro antes de formatá-lo."
+        exit 1
+    fi
+done
+
+includes=$(printf '%s,' "${staged_java_files[@]}")
+includes=${includes%,}
+
+./mvnw spring-javaformat:apply \
+    "-Dspring-javaformat.includes=$includes"
+
+git add -- "${staged_java_files[@]}"

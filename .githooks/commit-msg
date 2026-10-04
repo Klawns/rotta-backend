@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+commit_msg_file="$1"
+commit_msg=$(head -n 1 "$commit_msg_file")
+
+pattern='^(feat|fix|refactor|test|docs|chore|build|ci|perf|style)(\([a-zA-Z0-9._-]+\))?!?: .+'
+
+if ! echo "$commit_msg" | grep -Eq "$pattern"; then
+    echo "Commit inválido."
+    echo ""
+    echo "Use Conventional Commits."
+    echo ""
+    exit 1
+fi

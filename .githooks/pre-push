@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+local_branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ "$local_branch" == "main" || "$local_branch" == "master" ]]; then
+    echo "Push direto para '$local_branch' não é permitido."
+    exit 1
+fi
+
+if ! echo "$local_branch" | grep -Eq \
+    '^(develop|(feature|bugfix|chore|release|refactor|test)/[a-zA-Z0-9._-]+)$'; then
+
+    echo "Nome de branch inválido."
+    echo ""
+
+    exit 1
+fi
+
+echo "Executando testes..."
+
+./mvnw test
+
+echo "Testes concluídos."
